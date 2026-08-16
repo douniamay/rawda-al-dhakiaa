@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- خلفية دائرة متدرجة -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1565C0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="wallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E3F2FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BBDEFB;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.25)"/>
+    </filter>
+  </defs>
+
+  <!-- خلفية دائرة -->
+  <circle cx="256" cy="256" r="256" fill="url(#bgGrad)"/>
+
+  <!-- السماء الداخلية -->
+  <circle cx="256" cy="256" r="230" fill="#87CEEB" opacity="0.3"/>
+
+  <!-- الأرضية الخضراء -->
+  <ellipse cx="256" cy="420" rx="200" ry="40" fill="#388E3C" opacity="0.6"/>
+  <rect x="56" y="400" width="400" height="80" fill="#388E3C" opacity="0.6" rx="10"/>
+
+  <!-- المبنى الرئيسي -->
+  <rect x="120" y="260" width="272" height="170" rx="8" fill="url(#wallGrad)" filter="url(#shadow)"/>
+
+  <!-- السقف المثلث الرئيسي -->
+  <polygon points="96,265 256,130 416,265" fill="url(#roofGrad)" filter="url(#shadow)"/>
+
+  <!-- السقف الصغير فوق المدخل -->
+  <polygon points="196,310 256,265 316,310" fill="#1565C0"/>
+
+  <!-- نافذة يسار -->
+  <rect x="140" y="290" width="65" height="60" rx="8" fill="#4FC3F7" opacity="0.8"/>
+  <line x1="172" y1="290" x2="172" y2="350" stroke="white" stroke-width="3"/>
+  <line x1="140" y1="320" x2="205" y2="320" stroke="white" stroke-width="3"/>
+
+  <!-- نافذة يمين -->
+  <rect x="307" y="290" width="65" height="60" rx="8" fill="#4FC3F7" opacity="0.8"/>
+  <line x1="339" y1="290" x2="339" y2="350" stroke="white" stroke-width="3"/>
+  <line x1="307" y1="320" x2="372" y2="320" stroke="white" stroke-width="3"/>
+
+  <!-- الباب -->
+  <rect x="216" y="340" width="80" height="90" rx="10" fill="#1976D2"/>
+  <circle cx="288" cy="388" r="6" fill="#FFD700"/>
+
+  <!-- نجمة على السقف -->
+  <polygon points="256,108 263,130 286,130 268,143 275,166 256,153 237,166 244,143 226,130 249,130"
+           fill="#FFD700" filter="url(#shadow)"/>
+
+  <!-- نجوم صغيرة -->
+  <circle cx="150" cy="170" r="8" fill="#FFD700" opacity="0.9"/>
+  <circle cx="362" cy="155" r="6" fill="#FFD700" opacity="0.8"/>
+  <circle cx="130" cy="210" r="5" fill="#FFD700" opacity="0.7"/>
+  <circle cx="385" cy="200" r="5" fill="#FFD700" opacity="0.7"/>
+
+  <!-- سحابة يسار -->
+  <ellipse cx="130" cy="175" rx="35" ry="18" fill="white" opacity="0.7"/>
+  <ellipse cx="110" cy="175" rx="20" ry="14" fill="white" opacity="0.7"/>
+  <ellipse cx="150" cy="172" rx="22" ry="14" fill="white" opacity="0.7"/>
+
+  <!-- سحابة يمين -->
+  <ellipse cx="380" cy="165" rx="30" ry="16" fill="white" opacity="0.7"/>
+  <ellipse cx="362" cy="165" rx="18" ry="12" fill="white" opacity="0.7"/>
+  <ellipse cx="398" cy="163" rx="18" ry="12" fill="white" opacity="0.7"/>
+
+  <!-- زهور في الأرضية -->
+  <circle cx="110" cy="410" r="10" fill="#FF6B6B"/>
+  <circle cx="110" cy="410" r="5" fill="#FFD700"/>
+  <circle cx="140" cy="405" r="8" fill="#C77DFF"/>
+  <circle cx="140" cy="405" r="4" fill="#FFD700"/>
+  <circle cx="372" cy="410" r="10" fill="#FF6B6B"/>
+  <circle cx="372" cy="410" r="5" fill="#FFD700"/>
+  <circle cx="400" cy="405" r="8" fill="#6BCB77"/>
+  <circle cx="400" cy="405" r="4" fill="#FFD700"/>
+
+  <!-- نص عربي -->
+  <text x="256" y="480" text-anchor="middle" font-family="Arial" font-size="36"
+        font-weight="900" fill="white" opacity="0.95">ألعاب الروضة</text>
+</svg>

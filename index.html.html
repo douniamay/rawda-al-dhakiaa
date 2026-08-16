@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ألعاب الروضة 🌟</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#5BC8F5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ألعاب الروضة">
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('sw.js')
+        .then(()=> console.log('✅ التطبيق جاهز للعمل بدون إنترنت'))
+        .catch(e=> console.log('خطأ:', e));
+    });
+  }
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+:root {
+  --sky:#5BC8F5; --sun:#FFD93D; --grass:#6BCB77;
+  --coral:#FF6B6B; --purple:#C77DFF; --white:#FFFDF5; --dark:#2D2D2D;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Tajawal','Arial',sans-serif;background:var(--sky);min-height:100vh;overflow-x:hidden;position:relative;}
+
+/* خلفية */
+.sky-bg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#87CEEB 0%,#B0E2FF 58%,#6BCB77 58%,#4CAF50 100%);pointer-events:none;}
+.cloud{position:fixed;background:white;border-radius:50px;opacity:0.85;pointer-events:none;z-index:1;animation:floatCloud linear infinite;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%;}
+.cloud::before{width:60%;height:150%;top:-60%;right:20%;}
+.cloud::after{width:40%;height:120%;top:-40%;right:50%;}
+.cloud.c1{width:120px;height:40px;top:8%;animation-duration:28s;animation-delay:-5s;}
+.cloud.c2{width:80px;height:28px;top:18%;animation-duration:22s;animation-delay:-12s;}
+.cloud.c3{width:100px;height:34px;top:5%;animation-duration:35s;animation-delay:-20s;}
+@keyframes floatCloud{from{left:-160px}to{left:110%}}
+.star{position:fixed;font-size:1.4em;z-index:1;animation:twinkle 2s ease-in-out infinite alternate;pointer-events:none;}
+@keyframes twinkle{from{opacity:.3;transform:scale(.9)}to{opacity:1;transform:scale(1.1)}}
+
+/* محتوى */
+.content{position:relative;z-index:2;padding:16px 10px 60px;max-width:900px;margin:0 auto;}
+
+/* هيدر */
+header{text-align:center;padding:22px 20px 14px;background:rgba(255,255,255,.4);backdrop-filter:blur(8px);border-radius:30px;margin-bottom:22px;border:3px solid rgba(255,255,255,.6);box-shadow:0 8px 32px rgba(0,0,0,.08);}
+header h1{font-size:clamp(1.6em,5vw,2.8em);font-weight:900;color:var(--dark);text-shadow:3px 3px 0 rgba(255,255,255,.8);line-height:1.2;}
+header p{font-size:1.05em;color:#444;margin-top:5px;}
+
+/* تابات */
+.game-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.tab-btn{padding:10px 16px;font-size:.88em;font-weight:700;font-family:'Tajawal',sans-serif;border:3px solid rgba(255,255,255,.7);border-radius:50px;cursor:pointer;background:rgba(255,255,255,.5);color:var(--dark);transition:transform .15s,background .2s,box-shadow .2s;box-shadow:0 4px 12px rgba(0,0,0,.1);}
+.tab-btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.15);}
+.tab-btn.active{background:var(--sun);border-color:#e6b800;transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.2);}
+
+/* بانل */
+.game-panel{display:none;background:rgba(255,255,255,.55);backdrop-filter:blur(10px);border-radius:30px;padding:24px 18px;border:3px solid rgba(255,255,255,.7);box-shadow:0 12px 40px rgba(0,0,0,.1);}
+.game-panel.active{display:block;}
+.game-title{font-size:1.5em;font-weight:900;color:var(--dark);text-align:center;margin-bottom:5px;}
+.game-desc{text-align:center;color:#555;font-size:.98em;margin-bottom:18px;}
+
+/* أزرار */
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;}
+.lvl-btn{padding:9px 18px;font-size:.9em;font-weight:700;font-family:'Tajawal',sans-serif;background:white;color:var(--dark);border:3px solid #ddd;border-radius:50px;cursor:pointer;transition:transform .1s,border-color .1s;}
+.lvl-btn:hover{transform:scale(1.05);}
+.lvl-btn.sel{background:var(--grass);color:white;border-color:#4caf50;}
+.go-btn{padding:13px 32px;font-size:1.15em;font-weight:900;font-family:'Tajawal',sans-serif;background:var(--coral);color:white;border:none;border-radius:50px;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 6px 18px rgba(255,107,107,.4);}
+.go-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 10px 24px rgba(255,107,107,.5);}
+
+/* شريط نتيجة */
+.score-bar{display:flex;justify-content:center;gap:20px;font-size:1.05em;font-weight:700;color:var(--dark);background:rgba(255,255,255,.6);border-radius:20px;padding:9px 18px;margin-bottom:14px;flex-wrap:wrap;}
+.score-bar span{color:var(--coral);}
+.status-msg{text-align:center;font-size:1.25em;font-weight:700;min-height:34px;margin-bottom:12px;color:var(--dark);}
+
+/* ===== بطاقات الذاكرة ===== */
+.cards-grid{display:grid;gap:10px;justify-content:center;margin:0 auto;}
+.mem-card{width:86px;height:86px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2.5em;cursor:pointer;background:white;border:4px solid #e0e0e0;box-shadow:0 4px 10px rgba(0,0,0,.12);transition:transform .18s,background .18s,border-color .18s;user-select:none;position:relative;}
+.mem-card:hover{transform:scale(1.07);}
+.mem-card.flipped{background:#FFF9C4;border-color:var(--sun);animation:popCard .2s ease;}
+.mem-card.matched{background:#DFFFD6;border-color:var(--grass);cursor:default;transform:scale(1.02);}
+.mem-card.matched::after{content:'✓';position:absolute;top:-8px;left:-8px;background:var(--grass);color:white;border-radius:50%;width:22px;height:22px;font-size:.42em;display:flex;align-items:center;justify-content:center;font-weight:900;}
+.stars-bar{display:flex;justify-content:center;gap:5px;font-size:1.5em;margin-bottom:12px;}
+@keyframes popCard{0%{transform:scale(.85)}60%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+/* ===== لعبة الظل ===== */
+.shadow-game{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.shadow-prompt{font-size:5em;line-height:1;background:white;border-radius:20px;padding:14px 22px;border:4px solid var(--sun);box-shadow:0 6px 18px rgba(0,0,0,.1);animation:bounceIn .4s ease;}
+@keyframes bounceIn{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.shadow-question{font-size:1.1em;font-weight:700;color:#444;}
+.shadow-choices{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.shadow-opt{font-size:3.2em;background:rgba(0,0,0,.18);border-radius:18px;padding:12px 16px;cursor:pointer;border:4px solid transparent;transition:transform .15s,border-color .15s;filter:brightness(.18) contrast(5);user-select:none;}
+.shadow-opt:hover{transform:scale(1.1);border-color:var(--sky);}
+.shadow-opt.correct{filter:none;border-color:var(--grass);background:#DFFFD6;transform:scale(1.1);}
+.shadow-opt.wrong{filter:none;border-color:var(--coral);background:#FFE0E0;animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* ===== تذكر الترتيب ===== */
+.sequence-btns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:10px 0;}
+.seq-btn{width:86px;height:86px;border-radius:50%;font-size:2.2em;border:4px solid rgba(255,255,255,.5);cursor:pointer;transition:transform .1s,filter .1s;filter:brightness(.75);box-shadow:0 6px 18px rgba(0,0,0,.2);}
+.seq-btn:hover{filter:brightness(.9);transform:scale(1.05);}
+.seq-btn.lit{filter:brightness(1.5);transform:scale(1.12);box-shadow:0 0 32px rgba(255,255,200,.9);}
+.seq-btn.s0{background:var(--coral);}
+.seq-btn.s1{background:var(--grass);}
+.seq-btn.s2{background:var(--sun);}
+.seq-btn.s3{background:var(--purple);}
+.seq-btn.s4{background:var(--sky);}
+
+/* ===== الأرقام ===== */
+.num-question{font-size:5em;text-align:center;margin:10px 0;animation:bounceIn .4s ease;}
+.num-choices{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:10px 0;}
+.num-opt{width:80px;height:80px;border-radius:18px;background:white;border:4px solid #ddd;font-size:2em;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,border-color .15s;font-family:'Tajawal',sans-serif;}
+.num-opt:hover{transform:scale(1.08);border-color:var(--sky);}
+.num-opt.correct{background:#DFFFD6;border-color:var(--grass);}
+.num-opt.wrong{background:#FFE0E0;border-color:var(--coral);animation:shake .4s;}
+
+/* ===== التصنيف ===== */
+.sort-area{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.sort-box{min-width:130px;min-height:120px;background:rgba(255,255,255,.6);border:4px dashed #bbb;border-radius:20px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:border-color .2s,background .2s;}
+.sort-box.over{border-color:var(--sun);background:rgba(255,235,100,.3);}
+.sort-box-title{font-size:.95em;font-weight:900;color:var(--dark);margin-bottom:4px;}
+.sort-item{font-size:2.4em;cursor:grab;padding:4px;border-radius:10px;background:white;border:3px solid #eee;transition:transform .15s;user-select:none;}
+.sort-item:hover{transform:scale(1.1);}
+.sort-item:active{cursor:grabbing;}
+.sort-bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:70px;padding:10px;background:rgba(255,255,255,.35);border-radius:18px;margin-bottom:12px;}
+
+/* ===== أصوات الحيوانات ===== */
+.animal-card{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:16px;background:white;border-radius:20px;border:4px solid #ddd;transition:transform .2s,border-color .2s;min-width:110px;}
+.animal-card:hover{transform:scale(1.06);border-color:var(--sun);}
+.animal-card .ani-emoji{font-size:3.5em;}
+.animal-card .ani-name{font-size:.9em;font-weight:700;color:var(--dark);}
+.animal-choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px;}
+.sound-opt{padding:10px 18px;background:white;border:3px solid #ddd;border-radius:50px;font-size:1em;font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;transition:transform .15s,border-color .15s;}
+.sound-opt:hover{transform:scale(1.05);border-color:var(--sky);}
+.sound-opt.correct{background:#DFFFD6;border-color:var(--grass);}
+.sound-opt.wrong{background:#FFE0E0;border-color:var(--coral);animation:shake .4s;}
+.sound-wave{display:inline-block;animation:wave 0.5s ease-in-out infinite alternate;}
+@keyframes wave{from{transform:scaleY(1)}to{transform:scaleY(1.4)}}
+
+/* ===== فوز ===== */
+.win-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);align-items:center;justify-content:center;flex-direction:column;}
+.win-overlay.show{display:flex;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.win-box{background:white;border-radius:30px;padding:36px 46px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:popCard .5s ease;max-width:340px;width:90%;}
+.win-emoji{font-size:5em;margin-bottom:8px;}
+.win-text{font-size:1.7em;font-weight:900;color:var(--dark);margin-bottom:16px;}
+.win-stars{font-size:3em;letter-spacing:6px;margin-bottom:16px;}
+.win-time{font-size:.95em;color:#777;margin-bottom:20px;}
+.win-cert{font-size:1em;font-weight:700;color:var(--purple);margin-bottom:20px;}
+.win-retry{padding:13px 32px;font-size:1.05em;font-weight:900;font-family:'Tajawal',sans-serif;background:var(--grass);color:white;border:none;border-radius:50px;cursor:pointer;box-shadow:0 6px 18px rgba(107,203,119,.4);transition:transform .15s;}
+.win-retry:hover{transform:scale(1.05);}
+
+/* حقل اسم الطفل */
+.name-input{padding:10px 18px;font-size:1.05em;font-family:'Tajawal',sans-serif;border:3px solid #ddd;border-radius:50px;text-align:center;width:200px;outline:none;margin-bottom:10px;}
+.name-input:focus{border-color:var(--purple);}
+
+/* ===== قسم التقييم والتعليقات ===== */
+.feedback-section{
+  margin-top:36px;
+  background:rgba(255,255,255,.6);
+  backdrop-filter:blur(10px);
+  border-radius:30px;
+  padding:28px 22px;
+  border:3px solid rgba(255,255,255,.7);
+  box-shadow:0 12px 40px rgba(0,0,0,.1);
+}
+.feedback-title{
+  font-size:1.5em;font-weight:900;color:var(--dark);
+  text-align:center;margin-bottom:6px;
+}
+.feedback-desc{
+  text-align:center;color:#555;font-size:.95em;margin-bottom:22px;
+}
+
+/* التقييم بالنجوم */
+.rating-box{
+  background:rgba(255,255,255,.7);
+  border-radius:20px;padding:20px;
+  margin-bottom:20px;
+  border:2px solid rgba(255,255,255,.9);
+}
+.rating-box h3{font-size:1.1em;font-weight:900;color:var(--dark);margin-bottom:14px;text-align:center;}
+.stars-rating{display:flex;justify-content:center;gap:8px;margin-bottom:10px;direction:ltr;}
+.star-btn{
+  font-size:2.6em;cursor:pointer;
+  transition:transform .2s;
+  filter:grayscale(1) opacity(.4);
+  border:none;background:none;padding:0;line-height:1;
+}
+.star-btn:hover,.star-btn.active{filter:none;transform:scale(1.2);}
+.rating-label{text-align:center;font-size:1em;font-weight:700;color:#666;min-height:24px;margin-top:6px;}
+.rating-aspects{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px;}
+.aspect-chip{
+  padding:8px 16px;border-radius:50px;
+  background:rgba(255,255,255,.8);
+  border:3px solid #ddd;
+  font-size:.9em;font-weight:700;
+  font-family:'Tajawal',sans-serif;
+  cursor:pointer;transition:all .2s;color:var(--dark);
+}
+.aspect-chip:hover{transform:scale(1.05);}
+.aspect-chip.sel{background:var(--sun);border-color:#e6b800;color:#333;}
+
+/* حقل التعليق */
+.comment-box{
+  background:rgba(255,255,255,.7);
+  border-radius:20px;padding:20px;
+  margin-bottom:18px;
+  border:2px solid rgba(255,255,255,.9);
+}
+.comment-box h3{font-size:1.1em;font-weight:900;color:var(--dark);margin-bottom:14px;text-align:center;}
+.comment-fields{display:flex;flex-direction:column;gap:10px;}
+.field-row{display:flex;gap:10px;flex-wrap:wrap;}
+.inp{
+  padding:11px 16px;font-size:1em;
+  font-family:'Tajawal',sans-serif;
+  border:3px solid #ddd;border-radius:16px;
+  outline:none;flex:1;min-width:140px;
+  background:rgba(255,255,255,.9);
+  color:var(--dark);transition:border-color .2s;
+}
+.inp:focus{border-color:var(--purple);}
+textarea.inp{resize:vertical;min-height:90px;}
+.submit-btn{
+  padding:13px 30px;font-size:1.05em;font-weight:900;
+  font-family:'Tajawal',sans-serif;
+  background:var(--purple);color:white;border:none;
+  border-radius:50px;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 6px 18px rgba(199,125,255,.4);
+  align-self:flex-start;
+}
+.submit-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 10px 24px rgba(199,125,255,.5);}
+
+/* عرض التعليقات */
+.comments-list{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+.comment-card{
+  background:rgba(255,255,255,.85);
+  border-radius:18px;padding:16px 18px;
+  border:2px solid rgba(255,255,255,.9);
+  box-shadow:0 4px 12px rgba(0,0,0,.07);
+  animation:slideIn .3s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.comment-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.comment-author{font-weight:900;color:var(--dark);font-size:1em;}
+.comment-stars{font-size:1.1em;letter-spacing:2px;}
+.comment-aspects{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.comment-aspect-tag{
+  font-size:.78em;font-weight:700;
+  padding:3px 10px;border-radius:50px;
+  background:rgba(255,217,61,.3);
+  color:#7a6000;border:1px solid rgba(255,217,61,.5);
+}
+.comment-text{font-size:.95em;color:#444;line-height:1.5;}
+.comment-date{font-size:.78em;color:#aaa;margin-top:6px;text-align:left;}
+.no-comments{text-align:center;color:#999;font-size:.95em;padding:20px;}
+
+/* إحصائيات التقييم */
+.rating-stats{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  background:rgba(255,255,255,.6);border-radius:16px;
+  padding:14px;margin-bottom:18px;flex-wrap:wrap;
+}
+.avg-score{text-align:center;}
+.avg-num{font-size:3em;font-weight:900;color:var(--dark);line-height:1;}
+.avg-stars{font-size:1.4em;letter-spacing:3px;}
+.avg-label{font-size:.85em;color:#777;}
+.rating-bars{flex:1;min-width:180px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.bar-label{font-size:.82em;font-weight:700;width:14px;text-align:center;}
+.bar-track{flex:1;height:10px;background:#eee;border-radius:5px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--sun);border-radius:5px;transition:width .5s ease;}
+.bar-count{font-size:.8em;color:#888;width:20px;}
+
+.empty-state{text-align:center;padding:16px;color:#888;font-size:.95em;}
+
+@media(max-width:500px){
+  .mem-card{width:68px;height:68px;font-size:2em;}
+  .seq-btn{width:68px;height:68px;font-size:1.8em;}
+  .shadow-prompt{font-size:3.8em;}
+  .shadow-opt{font-size:2.8em;}
+  .num-opt{width:68px;height:68px;font-size:1.7em;}
+  .win-box{padding:26px 20px;}
+  .field-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="sky-bg"></div>
+<div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+<div class="star" style="top:10%;right:7%;animation-delay:.3s">⭐</div>
+<div class="star" style="top:6%;right:28%;animation-delay:1s">🌟</div>
+<div class="star" style="top:19%;right:58%;animation-delay:.6s">⭐</div>
+<div class="star" style="top:9%;right:84%;animation-delay:1.4s">🌟</div>
+
+<!-- نافذة الفوز -->
+<div class="win-overlay" id="winOverlay">
+  <div class="win-box">
+    <div class="win-emoji">🎉</div>
+    <div class="win-stars" id="winStars">⭐⭐⭐</div>
+    <div class="win-text" id="winText">أحسنت يا بطل!</div>
+    <div class="win-cert" id="winCert"></div>
+    <div class="win-time" id="winTime"></div>
+    <button class="win-retry" onclick="closeWin()">العب مرة ثانية 🔄</button>
+  </div>
+</div>
+
+<div class="content">
+  <header>
+    <h1>🌈 ألعاب الروضة الذكية 🌈</h1>
+    <p>العب، تعلّم، واستمتع! 🎮</p>
+    <div style="margin-top:10px;">
+      <input class="name-input" id="childName" type="text" placeholder="✏️ اكتب اسمك هنا" maxlength="20">
+    </div>
+  </header>
+
+  <div class="game-tabs">
+    <button class="tab-btn active" onclick="showTab('g1',this)">🃏 بطاقات الذاكرة</button>
+    <button class="tab-btn" onclick="showTab('g2',this)">🌑 لعبة الظل</button>
+    <button class="tab-btn" onclick="showTab('g3',this)">🔴 تذكر الترتيب</button>
+    <button class="tab-btn" onclick="showTab('g4',this)">🔢 الأرقام</button>
+    <button class="tab-btn" onclick="showTab('g5',this)">📦 التصنيف</button>
+    <button class="tab-btn" onclick="showTab('g6',this)">🐾 أصوات الحيوانات</button>
+  </div>
+
+  <!-- لعبة 1: بطاقات الذاكرة -->
+  <div class="game-panel active" id="g1">
+    <div class="game-title">🃏 بطاقات الذاكرة</div>
+    <div class="game-desc">اقلب البطاقات وابحث عن كل زوج متشابه!</div>
+    <div class="btn-row">
+      <button class="lvl-btn sel" onclick="g1SetLevel(4,this)">⭐ سهل</button>
+      <button class="lvl-btn" onclick="g1SetLevel(6,this)">⭐⭐ متوسط</button>
+      <button class="lvl-btn" onclick="g1SetLevel(8,this)">⭐⭐⭐ صعب</button>
+    </div>
+    <div class="btn-row"><button class="go-btn" onclick="g1Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g1ScoreBar" style="display:none;">
+      ✅ الأزواج: <span id="g1Score">0</span> &nbsp;|&nbsp; ⏱ الوقت: <span id="g1Time">0</span> ث
+    </div>
+    <div class="stars-bar" id="g1Stars" style="display:none;"></div>
+    <div class="status-msg" id="g1Status"></div>
+    <div class="cards-grid" id="g1Board"></div>
+  </div>
+
+  <!-- لعبة 2: الظل -->
+  <div class="game-panel" id="g2">
+    <div class="game-title">🌑 لعبة الظل</div>
+    <div class="game-desc">شوف الصورة وابحث عن ظلها الصحيح!</div>
+    <div class="btn-row"><button class="go-btn" onclick="g2Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g2ScoreBar" style="display:none;">
+      ✅ صح: <span id="g2Correct">0</span> &nbsp;|&nbsp; ❌ غلط: <span id="g2Wrong">0</span> &nbsp;|&nbsp; 📋 السؤال: <span id="g2Q">1</span>/10
+    </div>
+    <div class="status-msg" id="g2Status"></div>
+    <div class="shadow-game" id="g2Area" style="display:none;">
+      <div class="shadow-prompt" id="g2Target"></div>
+      <div class="shadow-question">أين الظل؟ 👇</div>
+      <div class="shadow-choices" id="g2Choices"></div>
+    </div>
+  </div>
+
+  <!-- لعبة 3: تذكر الترتيب -->
+  <div class="game-panel" id="g3">
+    <div class="game-title">🔴 تذكر الترتيب</div>
+    <div class="game-desc">انظر للترتيب واحفظه، ثم اضغط نفس الترتيب!</div>
+    <div class="btn-row"><button class="go-btn" onclick="g3Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g3ScoreBar" style="display:none;">
+      🎯 المرحلة: <span id="g3Level">1</span> &nbsp;|&nbsp; 🏆 أفضل: <span id="g3Best">0</span>
+    </div>
+    <div class="status-msg" id="g3Status"></div>
+    <div class="sequence-btns" id="g3Btns"></div>
+  </div>
+
+  <!-- لعبة 4: الأرقام -->
+  <div class="game-panel" id="g4">
+    <div class="game-title">🔢 تعلّم الأرقام</div>
+    <div class="game-desc">كم عدد الأشياء؟ اضغط على الرقم الصحيح!</div>
+    <div class="btn-row"><button class="go-btn" onclick="g4Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g4ScoreBar" style="display:none;">
+      ✅ صح: <span id="g4Score">0</span> &nbsp;|&nbsp; 📋 السؤال: <span id="g4Q">1</span>/10
+    </div>
+    <div class="status-msg" id="g4Status"></div>
+    <div id="g4Area" style="display:none;">
+      <div class="num-question" id="g4Question"></div>
+      <div class="num-choices" id="g4Choices"></div>
+    </div>
+  </div>
+
+  <!-- لعبة 5: التصنيف -->
+  <div class="game-panel" id="g5">
+    <div class="game-title">📦 لعبة التصنيف</div>
+    <div class="game-desc">اسحب كل صورة وضعها في المجموعة الصحيحة!</div>
+    <div class="btn-row">
+      <button class="lvl-btn sel" onclick="g5SetCat('animals',this)">🐾 حيوانات / فواكه</button>
+      <button class="lvl-btn" onclick="g5SetCat('shapes',this)">🔵 أشكال / ألوان</button>
+    </div>
+    <div class="btn-row"><button class="go-btn" onclick="g5Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g5ScoreBar" style="display:none;">
+      ✅ صح: <span id="g5Score">0</span> &nbsp;|&nbsp; 📦 المتبقي: <span id="g5Left">0</span>
+    </div>
+    <div class="status-msg" id="g5Status"></div>
+    <div id="g5Area" style="display:none;">
+      <div class="sort-bank" id="g5Bank"></div>
+      <div class="sort-area" id="g5Boxes"></div>
+    </div>
+  </div>
+
+  <!-- لعبة 6: أصوات الحيوانات -->
+  <div class="game-panel" id="g6">
+    <div class="game-title">🐾 أصوات الحيوانات</div>
+    <div class="game-desc">اقرأ صوت الحيوان وخمّن من هو!</div>
+    <div class="btn-row"><button class="go-btn" onclick="g6Start()">▶ ابدأ اللعبة</button></div>
+    <div class="score-bar" id="g6ScoreBar" style="display:none;">
+      ✅ صح: <span id="g6Score">0</span> &nbsp;|&nbsp; 📋 السؤال: <span id="g6Q">1</span>/8
+    </div>
+    <div class="status-msg" id="g6Status"></div>
+    <div id="g6Area" style="display:none;">
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-size:1.3em;font-weight:900;background:rgba(255,255,255,.7);border-radius:20px;padding:14px 20px;display:inline-block;" id="g6Sound"></div>
+      </div>
+      <div class="animal-choices" id="g6Choices"></div>
+    </div>
+  </div>
+
+  <!-- ======== قسم التقييم والتعليقات ======== -->
+  <div class="feedback-section" id="feedbackSection">
+    <div class="feedback-title">💬 آراء أولياء الأمور</div>
+    <div class="feedback-desc">شاركنا رأيك في الألعاب التعليمية لمساعدة الأطفال الآخرين 🌟</div>
+
+    <!-- إحصائيات التقييم -->
+    <div class="rating-stats" id="ratingStats" style="display:none;">
+      <div class="avg-score">
+        <div class="avg-num" id="avgNum">0</div>
+        <div class="avg-stars" id="avgStars">☆☆☆☆☆</div>
+        <div class="avg-label">متوسط التقييم</div>
+      </div>
+      <div class="rating-bars" id="ratingBars"></div>
+    </div>
+
+    <!-- نموذج التقييم -->
+    <div class="rating-box">
+      <h3>⭐ قيّم الألعاب</h3>
+      <div class="stars-rating" id="starRating">
+        <button class="star-btn" data-val="1">⭐</button>
+        <button class="star-btn" data-val="2">⭐</button>
+        <button class="star-btn" data-val="3">⭐</button>
+        <button class="star-btn" data-val="4">⭐</button>
+        <button class="star-btn" data-val="5">⭐</button>
+      </div>
+      <div class="rating-label" id="ratingLabel">اضغط على النجوم لتقييم الألعاب</div>
+      <div style="margin-top:14px;">
+        <div style="font-size:.9em;font-weight:700;color:#555;text-align:center;margin-bottom:10px;">ما الذي أعجبك؟ (اختياري)</div>
+        <div class="rating-aspects">
+          <button class="aspect-chip" data-aspect="سهولة الاستخدام">📱 سهولة الاستخدام</button>
+          <button class="aspect-chip" data-aspect="محتوى تعليمي">📚 محتوى تعليمي</button>
+          <button class="aspect-chip" data-aspect="تصميم جميل">🎨 تصميم جميل</button>
+          <button class="aspect-chip" data-aspect="مناسب للعمر">👶 مناسب للعمر</button>
+          <button class="aspect-chip" data-aspect="أصوات ممتعة">🔊 أصوات ممتعة</button>
+          <button class="aspect-chip" data-aspect="ألعاب متنوعة">🎮 ألعاب متنوعة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- نموذج التعليق -->
+    <div class="comment-box">
+      <h3>✏️ اكتب تعليقك</h3>
+      <div class="comment-fields">
+        <div class="field-row">
+          <input class="inp" id="parentName" type="text" placeholder="👤 اسم ولي الأمر" maxlength="30">
+          <input class="inp" id="childAge" type="text" placeholder="🎂 عمر الطفل" maxlength="10">
+        </div>
+        <textarea class="inp" id="commentText" placeholder="💬 شاركنا رأيك وتجربة طفلك مع الألعاب..." maxlength="300"></textarea>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div style="font-size:.82em;color:#aaa;" id="charCount">0 / 300 حرف</div>
+          <button class="submit-btn" onclick="submitComment()">📤 إرسال التعليق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- قائمة التعليقات -->
+    <div>
+      <div style="font-size:1.1em;font-weight:900;color:var(--dark);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+        💬 التعليقات <span id="commentsCount" style="font-size:.8em;color:#888;font-weight:700;"></span>
+      </div>
+      <div class="comments-list" id="commentsList">
+        <div class="no-comments">لا توجد تعليقات بعد — كن أول من يعلّق! 🌟</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<script>
+/* ======================================================
+   أدوات الصوت (Web Audio API)
+====================================================== */
+const AC = window.AudioContext || window.webkitAudioContext;
+let ac = null;
+function getAC(){ if(!ac) ac = new AC(); return ac; }
+
+function beep(freq, dur, type='sine', vol=0.4){
+  try{
+    const ctx = getAC();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    o.start(); o.stop(ctx.currentTime + dur);
+  }catch(e){}
+}
+
+function playCorrect(){
+  beep(523,.12); setTimeout(()=>beep(659,.12),120); setTimeout(()=>beep(784,.2),240);
+}
+function playWrong(){
+  beep(220,.18,'sawtooth',.3); setTimeout(()=>beep(180,.25,'sawtooth',.3),200);
+}
+function playWin(){
+  const notes=[523,659,784,1047,784,1047];
+  const times=[0,120,240,360,500,620];
+  notes.forEach((n,i)=>setTimeout(()=>beep(n,.18,'sine',.5),times[i]));
+}
+function playFlip(){
+  beep(440,.07,'sine',.2);
+}
+function playClick(){
+  beep(660,.06,'sine',.15);
+}
+
+/* ======================================================
+   أدوات مشتركة
+====================================================== */
+function showTab(id, btn){
+  document.querySelectorAll('.game-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  playClick();
+}
+
+function childName(){
+  return document.getElementById('childName').value.trim() || 'بطلنا';
+}
+
+function showWin(text, stars, timeStr){
+  playWin();
+  document.getElementById('winText').innerText = text;
+  document.getElementById('winStars').innerText = '⭐'.repeat(Math.max(1,Math.min(3,stars)));
+  document.getElementById('winTime').innerText = timeStr||'';
+  const n = childName();
+  document.getElementById('winCert').innerText = `🏅 شهادة تميّز لـ ${n}`;
+  document.getElementById('winOverlay').classList.add('show');
+  rainConfetti();
+}
+function closeWin(){
+  document.getElementById('winOverlay').classList.remove('show');
+}
+
+/* كونفيتي بسيط */
+function rainConfetti(){
+  for(let i=0;i<40;i++){
+    const d=document.createElement('div');
+    d.style.cssText=`position:fixed;z-index:200;font-size:${1.2+Math.random()}em;
+      left:${Math.random()*100}vw;top:-40px;pointer-events:none;
+      animation:fall ${1.5+Math.random()*2}s linear forwards;`;
+    d.innerText=['🎊','⭐','🌟','🎈','🎉','💫'][Math.floor(Math.random()*6)];
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(), 4000);
+  }
+  if(!document.getElementById('confettiStyle')){
+    const s=document.createElement('style');
+    s.id='confettiStyle';
+    s.innerText=`@keyframes fall{to{top:110vh;transform:rotate(720deg) scale(.5);opacity:0}}`;
+    document.head.appendChild(s);
+  }
+}
+
+/* ======================================================
+   لعبة 1: بطاقات الذاكرة
+====================================================== */
+const g1Emojis=['🐶','🐱','🐭','🐻','🐯','🦊','🐸','🐨','🦁','🐮','🐙','🦋','🌸','🍎','🍌','🚀'];
+let g1Level=4,g1Flipped=[],g1Score=0,g1CanFlip=true,g1Timer=0,g1Interval=null,g1Total=0;
+
+function g1SetLevel(n,btn){
+  g1Level=n;
+  document.querySelectorAll('#g1 .lvl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); playClick();
+}
+function g1Start(){
+  clearInterval(g1Interval);
+  g1Score=0;g1Timer=0;g1Flipped=[];g1CanFlip=true;g1Total=g1Level;
+  document.getElementById('g1Score').innerText='0';
+  document.getElementById('g1Time').innerText='0';
+  document.getElementById('g1ScoreBar').style.display='flex';
+  document.getElementById('g1Stars').style.display='flex';
+  document.getElementById('g1Status').innerText='🔍 ابحث عن الأزواج!';
+  g1RenderStars(g1Total,0);
+  const board=document.getElementById('g1Board');
+  board.innerHTML='';
+  board.style.gridTemplateColumns=`repeat(4,86px)`;
+  const chosen=g1Emojis.slice(0,g1Level);
+  [...chosen,...chosen].sort(()=>Math.random()-.5).forEach(e=>{
+    const card=document.createElement('div');
+    card.className='mem-card';card.dataset.val=e;card.innerText='❓';
+    card.addEventListener('click',g1Flip);
+    board.appendChild(card);
+  });
+  g1Interval=setInterval(()=>{g1Timer++;document.getElementById('g1Time').innerText=g1Timer;},1000);
+}
+function g1Flip(){
+  if(!g1CanFlip||this.classList.contains('flipped')||this.classList.contains('matched'))return;
+  playFlip();
+  this.innerText=this.dataset.val;this.classList.add('flipped');g1Flipped.push(this);
+  if(g1Flipped.length===2){g1CanFlip=false;setTimeout(g1Check,700);}
+}
+function g1Check(){
+  const[a,b]=g1Flipped;
+  if(a.dataset.val===b.dataset.val){
+    a.classList.add('matched');b.classList.add('matched');
+    g1Score++;document.getElementById('g1Score').innerText=g1Score;
+    g1RenderStars(g1Total,g1Score);
+    document.getElementById('g1Status').innerText='🎉 ممتاز! أصبت!';
+    playCorrect();
+    if(g1Score===g1Total){
+      clearInterval(g1Interval);
+      const stars=g1Timer<30?3:g1Timer<60?2:1;
+      setTimeout(()=>showWin(`أحسنت يا بطل! 🏆`,stars,`في ${g1Timer} ثانية`),400);
+    }
+  }else{
+    playWrong();
+    document.getElementById('g1Status').innerText='❌ حاول مرة ثانية!';
+    setTimeout(()=>{
+      a.classList.remove('flipped');b.classList.remove('flipped');
+      a.innerText='❓';b.innerText='❓';
+    },600);
+  }
+  g1Flipped=[];g1CanFlip=true;
+}
+function g1RenderStars(total,found){
+  const bar=document.getElementById('g1Stars');bar.innerHTML='';
+  for(let i=0;i<total;i++){const s=document.createElement('span');s.innerText=i<found?'⭐':'☆';bar.appendChild(s);}
+}
+
+/* ======================================================
+   لعبة 2: الظل
+====================================================== */
+const g2Items=['🐶','🐱','🍎','🌸','🚗','✈️','🎈','🦋','🍌','🌙','⭐','🐸','🎂','🌈','🏠','🎵'];
+let g2Correct=0,g2Wrong=0,g2QNum=0,g2Total=10,g2Active=false;
+
+function g2Start(){
+  g2Correct=0;g2Wrong=0;g2QNum=0;g2Active=true;
+  document.getElementById('g2Correct').innerText='0';
+  document.getElementById('g2Wrong').innerText='0';
+  document.getElementById('g2Q').innerText='1';
+  document.getElementById('g2ScoreBar').style.display='flex';
+  document.getElementById('g2Area').style.display='flex';
+  document.getElementById('g2Status').innerText='';
+  g2Next();
+}
+function g2Next(){
+  if(g2QNum>=g2Total){
+    const stars=g2Wrong===0?3:g2Wrong<=2?2:1;
+    setTimeout(()=>showWin(g2Wrong===0?'🌟 ممتاز! ما أخطأت أبداً!':`أحسنت! ${g2Correct} إجابة صحيحة`,stars),400);
+    return;
+  }
+  g2QNum++;document.getElementById('g2Q').innerText=g2QNum;
+  const shuffled=[...g2Items].sort(()=>Math.random()-.5);
+  const target=shuffled[0];
+  const options=shuffled.slice(0,4).sort(()=>Math.random()-.5);
+  document.getElementById('g2Target').innerText=target;
+  const choicesEl=document.getElementById('g2Choices');choicesEl.innerHTML='';
+  options.forEach(opt=>{
+    const btn=document.createElement('div');
+    btn.className='shadow-opt';btn.innerText=opt;btn.dataset.val=opt;
+    btn.addEventListener('click',function(){
+      if(!g2Active)return;g2Active=false;
+      if(this.dataset.val===target){
+        this.classList.add('correct');g2Correct++;
+        document.getElementById('g2Correct').innerText=g2Correct;
+        document.getElementById('g2Status').innerText='✅ صحيح! ممتاز!';
+        playCorrect();
+      }else{
+        this.classList.add('wrong');
+        choicesEl.querySelectorAll('.shadow-opt').forEach(b=>{if(b.dataset.val===target)b.classList.add('correct');});
+        g2Wrong++;document.getElementById('g2Wrong').innerText=g2Wrong;
+        document.getElementById('g2Status').innerText='❌ حاول المرة القادمة!';
+        playWrong();
+      }
+      setTimeout(()=>{g2Active=true;g2Next();},1400);
+    });
+    choicesEl.appendChild(btn);
+  });
+  document.getElementById('g2Status').innerText='👆 اضغط على الظل الصحيح';
+}
+
+/* ======================================================
+   لعبة 3: تذكر الترتيب
+====================================================== */
+const g3Colors=[{cls:'s0',emoji:'🔴'},{cls:'s1',emoji:'🟢'},{cls:'s2',emoji:'🟡'},{cls:'s3',emoji:'🟣'},{cls:'s4',emoji:'🔵'}];
+let g3Seq=[],g3PlayerSeq=[],g3CurLevel=1,g3Best=0,g3Playing=false;
+
+function g3Start(){
+  g3Seq=[];g3PlayerSeq=[];g3CurLevel=1;g3Playing=false;
+  document.getElementById('g3Level').innerText=1;
+  document.getElementById('g3ScoreBar').style.display='flex';
+  document.getElementById('g3Status').innerText='';
+  const cont=document.getElementById('g3Btns');cont.innerHTML='';
+  g3Colors.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className=`seq-btn ${c.cls}`;btn.dataset.idx=i;btn.innerText=c.emoji;
+    btn.addEventListener('click',function(){if(!g3Playing)return;g3PlayerPress(i,btn);});
+    cont.appendChild(btn);
+  });
+  setTimeout(g3NextRound,600);
+}
+function g3NextRound(){
+  g3PlayerSeq=[];g3Playing=false;
+  document.getElementById('g3Status').innerText='👀 شاهد الترتيب...';
+  g3Seq.push(Math.floor(Math.random()*g3Colors.length));
+  g3PlaySeq(0);
+}
+function g3PlaySeq(i){
+  if(i>=g3Seq.length){
+    setTimeout(()=>{document.getElementById('g3Status').innerText='🖐 دورك! اضغط نفس الترتيب';g3Playing=true;},600);
+    return;
+  }
+  const btn=document.querySelector(`#g3Btns .seq-btn[data-idx="${g3Seq[i]}"]`);
+  setTimeout(()=>{
+    beep(300+g3Seq[i]*80,.35,'sine',.35);
+    btn.classList.add('lit');
+    setTimeout(()=>{btn.classList.remove('lit');g3PlaySeq(i+1);},550);
+  },i*750);
+}
+function g3PlayerPress(idx,btn){
+  beep(300+idx*80,.15,'sine',.25);
+  btn.classList.add('lit');setTimeout(()=>btn.classList.remove('lit'),200);
+  g3PlayerSeq.push(idx);
+  const pos=g3PlayerSeq.length-1;
+  if(g3PlayerSeq[pos]!==g3Seq[pos]){
+    g3Playing=false;
+    if(g3CurLevel-1>g3Best){g3Best=g3CurLevel-1;document.getElementById('g3Best').innerText=g3Best;}
+    document.getElementById('g3Status').innerText='❌ أوه! ابدأ من جديد!';
+    playWrong();
+    const stars=g3CurLevel<=2?1:g3CurLevel<=4?2:3;
+    setTimeout(()=>showWin(`وصلت للمرحلة ${g3CurLevel}!`,stars),600);
+    return;
+  }
+  if(g3PlayerSeq.length===g3Seq.length){
+    g3Playing=false;g3CurLevel++;
+    document.getElementById('g3Level').innerText=g3CurLevel;
+    document.getElementById('g3Status').innerText='🎉 صح! الجولة القادمة...';
+    playCorrect();
+    setTimeout(g3NextRound,1200);
+  }
+}
+
+/* ======================================================
+   لعبة 4: الأرقام
+====================================================== */
+const g4Emojis=['🍎','⭐','🌸','🐶','🎈','🦋','🍌','🐱'];
+let g4Score=0,g4QNum=0,g4Total=10,g4Active=false;
+
+function g4Start(){
+  g4Score=0;g4QNum=0;g4Active=true;
+  document.getElementById('g4Score').innerText='0';
+  document.getElementById('g4Q').innerText='1';
+  document.getElementById('g4ScoreBar').style.display='flex';
+  document.getElementById('g4Area').style.display='block';
+  document.getElementById('g4Status').innerText='';
+  g4Next();
+}
+function g4Next(){
+  if(g4QNum>=g4Total){
+    const stars=g4Score>=9?3:g4Score>=6?2:1;
+    setTimeout(()=>showWin(`أحسنت! حصلت على ${g4Score} من ${g4Total}`,stars),300);
+    return;
+  }
+  g4QNum++;document.getElementById('g4Q').innerText=g4QNum;
+  const answer=Math.floor(Math.random()*9)+1;
+  const emoji=g4Emojis[Math.floor(Math.random()*g4Emojis.length)];
+  document.getElementById('g4Question').innerText=emoji.repeat(answer);
+  // خيارات 4 أرقام
+  const opts=new Set([answer]);
+  while(opts.size<4){const r=Math.floor(Math.random()*10)+1;opts.add(r);}
+  const arr=[...opts].sort(()=>Math.random()-.5);
+  const choices=document.getElementById('g4Choices');choices.innerHTML='';
+  arr.forEach(n=>{
+    const btn=document.createElement('div');
+    btn.className='num-opt';btn.innerText=n;
+    btn.addEventListener('click',function(){
+      if(!g4Active)return;g4Active=false;
+      choices.querySelectorAll('.num-opt').forEach(b=>b.style.pointerEvents='none');
+      if(n===answer){
+        this.classList.add('correct');g4Score++;
+        document.getElementById('g4Score').innerText=g4Score;
+        document.getElementById('g4Status').innerText='✅ ممتاز! هذا هو العدد الصحيح!';
+        playCorrect();
+      }else{
+        this.classList.add('wrong');
+        choices.querySelectorAll('.num-opt').forEach(b=>{if(+b.innerText===answer)b.classList.add('correct');});
+        document.getElementById('g4Status').innerText=`❌ العدد الصحيح هو ${answer}`;
+        playWrong();
+      }
+      setTimeout(()=>{g4Active=true;g4Next();},1400);
+    });
+    choices.appendChild(btn);
+  });
+  document.getElementById('g4Status').innerText='كم عدد الأشياء؟ 🤔';
+}
+
+/* ======================================================
+   لعبة 5: التصنيف (drag & drop)
+====================================================== */
+const g5Cats={
+  animals:{
+    groups:[
+      {name:'🐾 حيوانات',items:['🐶','🐱','🐸','🦁','🐮','🦊']},
+      {name:'🍎 فواكه',items:['🍎','🍌','🍇','🍉','🍊','🥝']}
+    ]
+  },
+  shapes:{
+    groups:[
+      {name:'🔵 أشكال',items:['🔵','🔴','🟡','🟢','🟣','🟠']},
+      {name:'💛 ألوان دافئة',items:['🔴','🟡','🟠','🧡','❤️','💛']}
+    ]
+  }
+};
+let g5Cat='animals',g5Score=0,g5Left=0;
+
+function g5SetCat(cat,btn){
+  g5Cat=cat;
+  document.querySelectorAll('#g5 .lvl-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');playClick();
+}
+function g5Start(){
+  g5Score=0;
+  document.getElementById('g5Score').innerText='0';
+  document.getElementById('g5ScoreBar').style.display='flex';
+  document.getElementById('g5Status').innerText='اسحب كل صورة إلى مكانها الصحيح!';
+  document.getElementById('g5Area').style.display='block';
+  const data=g5Cats[g5Cat];
+  // جمع كل العناصر وخلطها
+  let allItems=[];
+  data.groups.forEach(g=>allItems=[...allItems,...g.items]);
+  allItems=[...new Set(allItems)].sort(()=>Math.random()-.5);
+  g5Left=allItems.length;document.getElementById('g5Left').innerText=g5Left;
+  // بناء البنك
+  const bank=document.getElementById('g5Bank');bank.innerHTML='';
+  allItems.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='sort-item';el.draggable=true;el.innerText=item;el.dataset.item=item;
+    el.addEventListener('dragstart',e=>e.dataTransfer.setData('text',item));
+    // touch support
+    el.addEventListener('touchstart',g5TouchStart,{passive:true});
+    el.addEventListener('touchmove',g5TouchMove,{passive:false});
+    el.addEventListener('touchend',g5TouchEnd);
+    bank.appendChild(el);
+  });
+  // بناء الصناديق
+  const boxes=document.getElementById('g5Boxes');boxes.innerHTML='';
+  data.groups.forEach(g=>{
+    const box=document.createElement('div');
+    box.className='sort-box';box.dataset.group=g.name;
+    const title=document.createElement('div');
+    title.className='sort-box-title';title.innerText=g.name;
+    box.appendChild(title);
+    box.addEventListener('dragover',e=>{e.preventDefault();box.classList.add('over');});
+    box.addEventListener('dragleave',()=>box.classList.remove('over'));
+    box.addEventListener('drop',e=>{
+      e.preventDefault();box.classList.remove('over');
+      const item=e.dataTransfer.getData('text');
+      g5Drop(item,g,box);
+    });
+    boxes.appendChild(box);
+  });
+}
+// touch drag
+let g5DragItem=null,g5DragEl=null,g5Ghost=null;
+function g5TouchStart(e){
+  g5DragItem=e.currentTarget.dataset.item;
+  g5DragEl=e.currentTarget;
+  g5Ghost=g5DragEl.cloneNode(true);
+  g5Ghost.style.cssText='position:fixed;pointer-events:none;opacity:0.7;z-index:999;font-size:2.4em;';
+  document.body.appendChild(g5Ghost);
+}
+function g5TouchMove(e){
+  e.preventDefault();
+  const t=e.touches[0];
+  if(g5Ghost){g5Ghost.style.left=(t.clientX-20)+'px';g5Ghost.style.top=(t.clientY-20)+'px';}
+}
+function g5TouchEnd(e){
+  if(g5Ghost){g5Ghost.remove();g5Ghost=null;}
+  const t=e.changedTouches[0];
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  const box=el?el.closest('.sort-box'):null;
+  if(box&&g5DragItem){
+    const data=g5Cats[g5Cat];
+    const grp=data.groups.find(g=>g.name===box.dataset.group);
+    if(grp)g5Drop(g5DragItem,grp,box);
+  }
+  g5DragItem=null;g5DragEl=null;
+}
+function g5Drop(item,grp,box){
+  const bankEl=document.querySelector(`#g5Bank .sort-item[data-item="${item}"]`);
+  if(!bankEl)return;
+  if(grp.items.includes(item)){
+    // صح
+    bankEl.remove();
+    const placed=document.createElement('div');
+    placed.className='sort-item';placed.innerText=item;placed.style.cursor='default';
+    box.appendChild(placed);
+    g5Score++;g5Left--;
+    document.getElementById('g5Score').innerText=g5Score;
+    document.getElementById('g5Left').innerText=g5Left;
+    document.getElementById('g5Status').innerText='✅ ممتاز! صحيح!';
+    playCorrect();
+    if(g5Left===0){
+      setTimeout(()=>showWin('رتّبت كل شيء بشكل صحيح! 🏆',3),400);
+    }
+  }else{
+    document.getElementById('g5Status').innerText='❌ هذا ليس مكانه الصحيح!';
+    playWrong();
+    bankEl.style.animation='shake .4s';
+    setTimeout(()=>bankEl.style.animation='',500);
+  }
+}
+
+/* ======================================================
+   لعبة 6: أصوات الحيوانات
+====================================================== */
+const g6Animals=[
+  {emoji:'🐶',name:'كلب',sound:'هو هو 🐕'},
+  {emoji:'🐱',name:'قطة',sound:'مياو 🐈'},
+  {emoji:'🐮',name:'بقرة',sound:'مووو 🐄'},
+  {emoji:'🐸',name:'ضفدع',sound:'قراع قراع 🐸'},
+  {emoji:'🦁',name:'أسد',sound:'زئير 🦁'},
+  {emoji:'🐔',name:'دجاجة',sound:'كوكو كو 🐓'},
+  {emoji:'🐑',name:'خروف',sound:'مب مب 🐑'},
+  {emoji:'🦆',name:'بطة',sound:'كواك كواك 🦆'},
+  {emoji:'🐍',name:'ثعبان',sound:'سسسس 🐍'},
+  {emoji:'🐘',name:'فيل',sound:'دويّ 🐘'},
+];
+let g6Score=0,g6QNum=0,g6Total=8,g6Active=false;
+
+function g6Start(){
+  g6Score=0;g6QNum=0;g6Active=true;
+  document.getElementById('g6Score').innerText='0';
+  document.getElementById('g6Q').innerText='1';
+  document.getElementById('g6ScoreBar').style.display='flex';
+  document.getElementById('g6Area').style.display='block';
+  document.getElementById('g6Status').innerText='';
+  g6Next();
+}
+function g6Next(){
+  if(g6QNum>=g6Total){
+    const stars=g6Score>=7?3:g6Score>=4?2:1;
+    setTimeout(()=>showWin(`أحسنت! عرفت ${g6Score} من ${g6Total} حيوانات!`,stars),300);
+    return;
+  }
+  g6QNum++;document.getElementById('g6Q').innerText=g6QNum;
+  const shuffled=[...g6Animals].sort(()=>Math.random()-.5);
+  const answer=shuffled[0];
+  const opts=shuffled.slice(0,4).sort(()=>Math.random()-.5);
+  document.getElementById('g6Sound').innerHTML=`ما هو الحيوان الذي يصدر هذا الصوت؟<br><span class="sound-wave" style="font-size:1.4em;">${answer.sound}</span>`;
+  const choices=document.getElementById('g6Choices');choices.innerHTML='';
+  opts.forEach(a=>{
+    const btn=document.createElement('div');
+    btn.className='animal-card';
+    btn.innerHTML=`<div class="ani-emoji">${a.emoji}</div><div class="ani-name">${a.name}</div>`;
+    btn.addEventListener('click',function(){
+      if(!g6Active)return;g6Active=false;
+      choices.querySelectorAll('.animal-card').forEach(b=>b.style.pointerEvents='none');
+      if(a.name===answer.name){
+        this.style.border='4px solid #6BCB77';this.style.background='#DFFFD6';
+        g6Score++;document.getElementById('g6Score').innerText=g6Score;
+        document.getElementById('g6Status').innerText=`✅ صحيح! هذا ${answer.name}!`;
+        playCorrect();
+      }else{
+        this.style.border='4px solid #FF6B6B';this.style.background='#FFE0E0';
+        choices.querySelectorAll('.animal-card').forEach(b=>{
+          if(b.querySelector('.ani-name').innerText===answer.name){
+            b.style.border='4px solid #6BCB77';b.style.background='#DFFFD6';
+          }
+        });
+        document.getElementById('g6Status').innerText=`❌ الصواب هو ${answer.name} ${answer.emoji}`;
+        playWrong();
+      }
+      setTimeout(()=>{g6Active=true;g6Next();},1600);
+    });
+    choices.appendChild(btn);
+  });
+  document.getElementById('g6Status').innerText='🤔 من أصدر هذا الصوت؟';
+}
+
+/* ======================================================
+   قسم التقييم والتعليقات
+====================================================== */
+let currentRating = 0;
+let selectedAspects = [];
+let comments = [];
+
+// نجوم التقييم
+const ratingLabels = ['','ضعيف 😕','مقبول 😐','جيد 🙂','ممتاز 😊','رائع جداً 🤩'];
+document.querySelectorAll('.star-btn').forEach(btn => {
+  btn.addEventListener('mouseenter', function(){
+    const val = +this.dataset.val;
+    highlightStars(val);
+  });
+  btn.addEventListener('mouseleave', ()=> highlightStars(currentRating));
+  btn.addEventListener('click', function(){
+    currentRating = +this.dataset.val;
+    highlightStars(currentRating);
+    document.getElementById('ratingLabel').innerText = ratingLabels[currentRating];
+    playClick();
+  });
+});
+
+function highlightStars(val){
+  document.querySelectorAll('.star-btn').forEach(b=>{
+    b.classList.toggle('active', +b.dataset.val <= val);
+  });
+}
+
+// الجوانب
+document.querySelectorAll('.aspect-chip').forEach(chip=>{
+  chip.addEventListener('click', function(){
+    this.classList.toggle('sel');
+    const asp = this.dataset.aspect;
+    if(this.classList.contains('sel')){
+      if(!selectedAspects.includes(asp)) selectedAspects.push(asp);
+    } else {
+      selectedAspects = selectedAspects.filter(a=>a!==asp);
+    }
+    playClick();
+  });
+});
+
+// عداد الأحرف
+document.getElementById('commentText').addEventListener('input', function(){
+  document.getElementById('charCount').innerText = `${this.value.length} / 300 حرف`;
+});
+
+// إرسال التعليق
+function submitComment(){
+  const name   = document.getElementById('parentName').value.trim();
+  const age    = document.getElementById('childAge').value.trim();
+  const text   = document.getElementById('commentText').value.trim();
+
+  if(!currentRating){
+    shakeEl('starRating');
+    document.getElementById('ratingLabel').innerText = '⚠️ الرجاء اختيار تقييم بالنجوم أولاً';
+    document.getElementById('ratingLabel').style.color = 'var(--coral)';
+    return;
+  }
+  if(!name){
+    shakeEl('parentName');
+    document.getElementById('parentName').placeholder = '⚠️ أدخل اسمك من فضلك';
+    return;
+  }
+
+  const comment = {
+    name,
+    age,
+    text,
+    rating: currentRating,
+    aspects: [...selectedAspects],
+    date: new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'})
+  };
+  comments.unshift(comment);
+  renderComments();
+  renderStats();
+  resetForm();
+  playWin();
+
+  // تمرير لقائمة التعليقات
+  setTimeout(()=>document.getElementById('commentsList').scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+function shakeEl(id){
+  const el = document.getElementById(id);
+  el.style.animation='shake .4s';
+  setTimeout(()=>el.style.animation='',500);
+}
+
+function resetForm(){
+  currentRating = 0;
+  selectedAspects = [];
+  highlightStars(0);
+  document.getElementById('ratingLabel').innerText = 'شكراً على تقييمك! ⭐';
+  document.getElementById('ratingLabel').style.color = 'var(--grass)';
+  document.getElementById('parentName').value='';
+  document.getElementById('childAge').value='';
+  document.getElementById('commentText').value='';
+  document.getElementById('charCount').innerText='0 / 300 حرف';
+  document.querySelectorAll('.aspect-chip').forEach(c=>c.classList.remove('sel'));
+}
+
+function renderComments(){
+  const list = document.getElementById('commentsList');
+  const count = document.getElementById('commentsCount');
+  count.innerText = comments.length ? `(${comments.length})` : '';
+
+  if(!comments.length){
+    list.innerHTML='<div class="no-comments">لا توجد تعليقات بعد — كن أول من يعلّق! 🌟</div>';
+    return;
+  }
+  list.innerHTML = comments.map(c=>`
+    <div class="comment-card">
+      <div class="comment-header">
+        <div class="comment-author">👤 ${escHtml(c.name)}${c.age?' — طفل عمره '+escHtml(c.age):''}</div>
+        <div class="comment-stars">${'⭐'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</div>
+      </div>
+      ${c.aspects.length?`<div class="comment-aspects">${c.aspects.map(a=>`<span class="comment-aspect-tag">✓ ${a}</span>`).join('')}</div>`:''}
+      ${c.text?`<div class="comment-text">${escHtml(c.text)}</div>`:''}
+      <div class="comment-date">📅 ${c.date}</div>
+    </div>
+  `).join('');
+}
+
+function renderStats(){
+  if(!comments.length){ document.getElementById('ratingStats').style.display='none'; return; }
+  document.getElementById('ratingStats').style.display='flex';
+
+  const avg = comments.reduce((s,c)=>s+c.rating,0)/comments.length;
+  document.getElementById('avgNum').innerText = avg.toFixed(1);
+
+  const filled = Math.round(avg);
+  document.getElementById('avgStars').innerText = '⭐'.repeat(filled)+'☆'.repeat(5-filled);
+
+  // أعمدة التوزيع
+  const bars = document.getElementById('ratingBars');
+  bars.innerHTML='';
+  for(let s=5;s>=1;s--){
+    const cnt = comments.filter(c=>c.rating===s).length;
+    const pct = comments.length ? Math.round(cnt/comments.length*100) : 0;
+    bars.innerHTML+=`
+      <div class="bar-row">
+        <div class="bar-label">${s}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="bar-count">${cnt}</div>
+      </div>`;
+  }
+}
+
+function escHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// تعليقات تجريبية لإظهار القسم
+comments = [
+  {name:'أم سارة',age:'5 سنوات',text:'ألعاب رائعة! ابنتي تلعب بها يومياً وساعدتها كثيراً في تعلم الأرقام والحيوانات. شكراً جزيلاً.',rating:5,aspects:['محتوى تعليمي','مناسب للعمر','تصميم جميل'],date:'١٢ أغسطس ٢٠٢٦'},
+  {name:'أبو محمد',age:'4 سنوات',text:'تصميم جميل ومناسب للأطفال، ولدي يحب لعبة الألوان كثيراً.',rating:4,aspects:['تصميم جميل','سهولة الاستخدام'],date:'١١ أغسطس ٢٠٢٦'},
+  {name:'أم عمر',age:'6 سنوات',text:'ممتازة! أتمنى إضافة المزيد من الألعاب.',rating:5,aspects:['ألعاب متنوعة','أصوات ممتعة'],date:'١٠ أغسطس ٢٠٢٦'},
+];
+renderComments();
+renderStats();
+</script>
+</body>
+</html>
